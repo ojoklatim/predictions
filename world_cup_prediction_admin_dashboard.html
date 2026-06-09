@@ -1,0 +1,455 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#0057B8;--primary-dark:#003F8A;--gold:#FFD700;--surface:#F5F7FA;--card:#fff;--text:#0A0A0A;--muted:#6B7280;--divider:#E5E7EB;--green:#16a34a;--red:#dc2626;--orange:#EA580C}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);color:var(--color-text-primary)}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh;max-width:1200px;margin:0 auto;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.sidebar{background:var(--primary);padding:0;display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.12)}
+.sidebar-logo .trophy{font-size:28px;margin-bottom:6px;display:block}
+.sidebar-logo .app-name{color:#fff;font-size:15px;font-weight:500;line-height:1.2}
+.sidebar-logo .version{color:rgba(255,255,255,0.55);font-size:11px;margin-top:2px}
+.nav{padding:12px 0;flex:1}
+.nav-section{padding:8px 18px 4px;color:rgba(255,255,255,0.45);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;color:rgba(255,255,255,0.75);font-size:13px;border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,0.08);color:#fff}
+.nav-item.active{background:rgba(255,255,255,0.15);color:#fff;border-left-color:#FFD700}
+.nav-item i{font-size:16px;width:18px}
+.sidebar-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,0.12)}
+.admin-pill{display:flex;align-items:center;gap:8px}
+.admin-avatar{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:500}
+.admin-info{flex:1}
+.admin-name{color:#fff;font-size:12px;font-weight:500}
+.admin-role{color:rgba(255,255,255,0.5);font-size:10px}
+.main{flex:1;overflow:auto;background:var(--color-background-secondary)}
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 24px;background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.topbar-title{flex:1;font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.topbar-search{display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 12px;font-size:13px;color:var(--color-text-secondary);width:200px}
+.topbar-search i{font-size:15px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500}
+.badge-live{background:#fee2e2;color:#991b1b}
+.badge-upcoming{background:#dbeafe;color:#1e40af}
+.badge-finished{background:#f0fdf4;color:#166534}
+.badge-gold{background:#fef9c3;color:#713f12}
+.content{padding:20px 24px;display:flex;flex-direction:column;gap:20px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;color:var(--color-text-primary)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark);border-color:var(--primary-dark)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px}
+.stat-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.stat-label i{font-size:14px}
+.stat-value{font-size:24px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.stat-delta{margin-top:6px;font-size:11px;color:var(--color-text-secondary)}
+.stat-delta .up{color:#16a34a}
+.stat-delta .down{color:#dc2626}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-align:left;padding:6px 10px;border-bottom:0.5px solid var(--color-border-tertiary);white-space:nowrap}
+tbody td{padding:9px 10px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--color-background-secondary)}
+.flag-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px}
+.flag{font-size:16px}
+.team-vs{display:flex;align-items:center;gap:6px;font-size:12px}
+.vs-divider{color:var(--color-text-secondary);font-size:10px}
+.score-pill{background:var(--primary);color:#fff;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:500}
+.score-pill.none{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.participants-bar{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary)}
+.mini-bar-bg{width:60px;height:4px;background:var(--color-background-secondary);border-radius:2px;overflow:hidden}
+.mini-bar-fill{height:100%;background:var(--primary);border-radius:2px}
+.action-btns{display:flex;gap:4px}
+.rank-col{width:28px;color:var(--color-text-secondary);font-size:11px;font-weight:500}
+.avatar-sm{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:500;flex-shrink:0}
+.user-cell{display:flex;align-items:center;gap:8px}
+.crown{font-size:14px}
+.tabbar{display:flex;gap:2px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:99px;padding:3px;margin-bottom:14px}
+.tab{padding:5px 14px;border-radius:99px;font-size:12px;cursor:pointer;color:var(--color-text-secondary);transition:all .15s}
+.tab.active{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500;box-shadow:0 0 0 0.5px var(--color-border-tertiary)}
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:28px;height:28px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.activity-icon.blue{background:#dbeafe;color:#1e40af}
+.activity-icon.green{background:#dcfce7;color:#166534}
+.activity-icon.amber{background:#fef3c7;color:#92400e}
+.activity-icon.red{background:#fee2e2;color:#991b1b}
+.activity-text{flex:1;font-size:12px;color:var(--color-text-primary);line-height:1.4}
+.activity-time{font-size:11px;color:var(--color-text-secondary);white-space:nowrap;margin-top:1px}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.progress-label{font-size:12px;color:var(--color-text-primary);width:90px;flex-shrink:0}
+.progress-bg{flex:1;height:6px;background:var(--color-background-secondary);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px}
+.progress-val{font-size:11px;color:var(--color-text-secondary);width:30px;text-align:right;flex-shrink:0}
+.inline-stat{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px}
+.inline-stat:last-child{border-bottom:none}
+.inline-stat-label{color:var(--color-text-secondary)}
+.inline-stat-value{font-weight:500;color:var(--color-text-primary)}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.dot-live{background:#dc2626}
+.dot-upcoming{background:#3b82f6}
+.dot-finished{background:#16a34a}
+</style>
+
+<h2 class="sr-only">World Cup Prediction App — Admin Dashboard</h2>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="trophy">🏆</span>
+      <div class="app-name">Prediction System</div>
+      <div class="version">Admin Panel · v1.0</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+      <div class="nav-item"><i class="ti ti-chart-bar" aria-hidden="true"></i> Analytics</div>
+      <div class="nav-section">Competition</div>
+      <div class="nav-item"><i class="ti ti-ball-football" aria-hidden="true"></i> Matches</div>
+      <div class="nav-item"><i class="ti ti-chart-arrows" aria-hidden="true"></i> Predictions</div>
+      <div class="nav-item"><i class="ti ti-trophy" aria-hidden="true"></i> Leaderboard</div>
+      <div class="nav-item"><i class="ti ti-tournament" aria-hidden="true"></i> Bracket</div>
+      <div class="nav-section">Users</div>
+      <div class="nav-item"><i class="ti ti-users" aria-hidden="true"></i> All users</div>
+      <div class="nav-item"><i class="ti ti-coin" aria-hidden="true"></i> Payments</div>
+      <div class="nav-section">Settings</div>
+      <div class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i> Configuration</div>
+      <div class="nav-item"><i class="ti ti-bell" aria-hidden="true"></i> Notifications</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-pill">
+        <div class="admin-avatar">AD</div>
+        <div class="admin-info">
+          <div class="admin-name">Admin</div>
+          <div class="admin-role">Super Admin</div>
+        </div>
+        <i class="ti ti-logout" style="color:rgba(255,255,255,0.4);font-size:14px;cursor:pointer" aria-hidden="true"></i>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">Dashboard</div>
+      <div class="topbar-search"><i class="ti ti-search" aria-hidden="true"></i>Search…</div>
+      <button class="btn btn-primary btn-sm"><i class="ti ti-plus" aria-hidden="true"></i> Add match</button>
+    </div>
+
+    <div class="content">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label"><i class="ti ti-users" aria-hidden="true"></i> Total users</div>
+          <div class="stat-value">3,847</div>
+          <div class="stat-delta"><span class="up">↑ 12%</span> this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="ti ti-chart-arrows" aria-hidden="true"></i> Predictions</div>
+          <div class="stat-value">28,412</div>
+          <div class="stat-delta"><span class="up">↑ 34%</span> today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="ti ti-coin" aria-hidden="true"></i> Revenue (€)</div>
+          <div class="stat-value">3,847</div>
+          <div class="stat-delta"><span class="up">↑ €1 / entry</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><i class="ti ti-ball-football" aria-hidden="true"></i> Live now</div>
+          <div class="stat-value">4</div>
+          <div class="stat-delta"><span style="color:#dc2626">● Live</span> matches</div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <div>
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Match management</div>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-sm">Filter</button>
+                <button class="btn btn-primary btn-sm"><i class="ti ti-plus" aria-hidden="true"></i> New</button>
+              </div>
+            </div>
+            <div class="tabbar">
+              <div class="tab active">All</div>
+              <div class="tab">Live</div>
+              <div class="tab">Upcoming</div>
+              <div class="tab">Finished</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Match</th>
+                  <th>Stage</th>
+                  <th>Status</th>
+                  <th>Score</th>
+                  <th>Entries</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="team-vs"><span>🇧🇷</span><span>Brazil</span><span class="vs-divider">vs</span><span>🇦🇷</span><span>Argentina</span></div></td>
+                  <td style="color:var(--color-text-secondary);white-space:nowrap">Group A</td>
+                  <td><span class="badge badge-live"><span class="status-dot dot-live"></span>67'</span></td>
+                  <td><span class="score-pill">2 – 1</span></td>
+                  <td>
+                    <div class="participants-bar">
+                      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:61%"></div></div>
+                      1,243
+                    </div>
+                  </td>
+                  <td><div class="action-btns"><button class="btn btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-sm" style="color:#dc2626"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="team-vs"><span>🇫🇷</span><span>France</span><span class="vs-divider">vs</span><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><span>England</span></div></td>
+                  <td style="color:var(--color-text-secondary);white-space:nowrap">Group B</td>
+                  <td><span class="badge badge-live"><span class="status-dot dot-live"></span>45'</span></td>
+                  <td><span class="score-pill">1 – 1</span></td>
+                  <td>
+                    <div class="participants-bar">
+                      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:43%"></div></div>
+                      876
+                    </div>
+                  </td>
+                  <td><div class="action-btns"><button class="btn btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-sm" style="color:#dc2626"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="team-vs"><span>🇩🇪</span><span>Germany</span><span class="vs-divider">vs</span><span>🇪🇸</span><span>Spain</span></div></td>
+                  <td style="color:var(--color-text-secondary);white-space:nowrap">Group C</td>
+                  <td><span class="badge badge-upcoming"><span class="status-dot dot-upcoming"></span>18:00</span></td>
+                  <td><span class="score-pill none">– : –</span></td>
+                  <td>
+                    <div class="participants-bar">
+                      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:79%"></div></div>
+                      1,611
+                    </div>
+                  </td>
+                  <td><div class="action-btns"><button class="btn btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-sm" style="color:#dc2626"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="team-vs"><span>🇵🇹</span><span>Portugal</span><span class="vs-divider">vs</span><span>🇲🇦</span><span>Morocco</span></div></td>
+                  <td style="color:var(--color-text-secondary);white-space:nowrap">R16</td>
+                  <td><span class="badge badge-upcoming"><span class="status-dot dot-upcoming"></span>21:00</span></td>
+                  <td><span class="score-pill none">– : –</span></td>
+                  <td>
+                    <div class="participants-bar">
+                      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:35%"></div></div>
+                      712
+                    </div>
+                  </td>
+                  <td><div class="action-btns"><button class="btn btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-sm" style="color:#dc2626"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+                </tr>
+                <tr>
+                  <td><div class="team-vs"><span>🇪🇸</span><span>Spain</span><span class="vs-divider">vs</span><span>🇩🇪</span><span>Germany</span></div></td>
+                  <td style="color:var(--color-text-secondary);white-space:nowrap">Group C</td>
+                  <td><span class="badge badge-finished"><span class="status-dot dot-finished"></span>FT</span></td>
+                  <td><span class="score-pill">3 – 2</span></td>
+                  <td>
+                    <div class="participants-bar">
+                      <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:100%"></div></div>
+                      2,104
+                    </div>
+                  </td>
+                  <td><div class="action-btns"><button class="btn btn-sm"><i class="ti ti-edit" aria-hidden="true"></i></button><button class="btn btn-sm" style="color:#dc2626"><i class="ti ti-trash" aria-hidden="true"></i></button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <div class="section-header">
+              <div class="section-title">Top users — predictions leaderboard</div>
+              <button class="btn btn-sm">View all</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>User</th>
+                  <th>Points</th>
+                  <th>Predictions</th>
+                  <th>Exact</th>
+                  <th>Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="rank-col">01</td>
+                  <td><div class="user-cell"><div class="avatar-sm" style="background:#e53935">CM</div>Carlos Mendez</div></td>
+                  <td><strong>47</strong></td>
+                  <td>18</td>
+                  <td>9</td>
+                  <td><span class="badge badge-gold">🥇 Gold</span></td>
+                </tr>
+                <tr>
+                  <td class="rank-col">02</td>
+                  <td><div class="user-cell"><div class="avatar-sm" style="background:#8e24aa">SL</div>Sophie Laurent</div></td>
+                  <td><strong>43</strong></td>
+                  <td>18</td>
+                  <td>7</td>
+                  <td><span class="badge badge-gold">🥇 Gold</span></td>
+                </tr>
+                <tr>
+                  <td class="rank-col">03</td>
+                  <td><div class="user-cell"><div class="avatar-sm" style="background:#00897b">JO</div>James Osei</div></td>
+                  <td><strong>39</strong></td>
+                  <td>17</td>
+                  <td>6</td>
+                  <td><span class="badge badge-upcoming">Silver</span></td>
+                </tr>
+                <tr>
+                  <td class="rank-col">04</td>
+                  <td><div class="user-cell"><div class="avatar-sm" style="background:#f4511e">YT</div>Yuki Tanaka</div></td>
+                  <td><strong>36</strong></td>
+                  <td>16</td>
+                  <td>6</td>
+                  <td><span class="badge badge-upcoming">Silver</span></td>
+                </tr>
+                <tr>
+                  <td class="rank-col">05</td>
+                  <td><div class="user-cell"><div class="avatar-sm" style="background:#1e88e5">AD</div>Amara Diallo</div></td>
+                  <td><strong>34</strong></td>
+                  <td>17</td>
+                  <td>5</td>
+                  <td><span class="badge badge-upcoming">Silver</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="section-header">
+              <div class="section-title">Prediction accuracy</div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">Exact score</div>
+              <div class="progress-bg"><div class="progress-fill" style="width:38%;background:#0057B8"></div></div>
+              <div class="progress-val">38%</div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">Correct winner</div>
+              <div class="progress-bg"><div class="progress-fill" style="width:54%;background:#3b82f6"></div></div>
+              <div class="progress-val">54%</div>
+            </div>
+            <div class="progress-row">
+              <div class="progress-label">Wrong result</div>
+              <div class="progress-bg"><div class="progress-fill" style="width:8%;background:#e5e7eb"></div></div>
+              <div class="progress-val">8%</div>
+            </div>
+            <div style="height:1px;background:var(--color-border-tertiary);margin:10px 0"></div>
+            <div style="position:relative;width:100%;height:130px;margin-top:4px">
+              <canvas id="predChart" role="img" aria-label="Daily predictions over the past 7 days">Predictions per day: Mon 2300, Tue 3100, Wed 4200, Thu 3800, Fri 5100, Sat 4700, Sun 4900.</canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-title" style="margin-bottom:12px">Revenue snapshot</div>
+            <div class="inline-stat">
+              <div class="inline-stat-label">Total entries</div>
+              <div class="inline-stat-value">3,847</div>
+            </div>
+            <div class="inline-stat">
+              <div class="inline-stat-label">Entry fee</div>
+              <div class="inline-stat-value">€1.00</div>
+            </div>
+            <div class="inline-stat">
+              <div class="inline-stat-label">Total raised</div>
+              <div class="inline-stat-value" style="color:#16a34a">€3,847.00</div>
+            </div>
+            <div class="inline-stat">
+              <div class="inline-stat-label">Prize pool (est.)</div>
+              <div class="inline-stat-value" style="color:#0057B8">€3,078.00</div>
+            </div>
+            <div class="inline-stat">
+              <div class="inline-stat-label">Platform fee</div>
+              <div class="inline-stat-value">€769.00</div>
+            </div>
+            <button class="btn btn-sm" style="width:100%;justify-content:center;margin-top:10px"><i class="ti ti-download" aria-hidden="true"></i> Export CSV</button>
+          </div>
+
+          <div class="card">
+            <div class="section-title" style="margin-bottom:12px">Recent activity</div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-icon green"><i class="ti ti-coin" aria-hidden="true"></i></div>
+                <div>
+                  <div class="activity-text">Sophie Laurent paid entry fee for Germany vs Spain</div>
+                  <div class="activity-time">2 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon blue"><i class="ti ti-chart-arrows" aria-hidden="true"></i></div>
+                <div>
+                  <div class="activity-text">Carlos Mendez submitted prediction: Brazil 2–1 Argentina</div>
+                  <div class="activity-time">5 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon amber"><i class="ti ti-ball-football" aria-hidden="true"></i></div>
+                <div>
+                  <div class="activity-text">Match score updated: Spain 3 – 2 Germany (FT)</div>
+                  <div class="activity-time">18 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon blue"><i class="ti ti-user-plus" aria-hidden="true"></i></div>
+                <div>
+                  <div class="activity-text">New user registered: Yuki Tanaka</div>
+                  <div class="activity-time">32 min ago</div>
+                </div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-icon red"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+                <div>
+                  <div class="activity-text">Payment flagged for review — User #2041</div>
+                  <div class="activity-time">1 hr ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const ctx = document.getElementById('predChart');
+if(ctx){
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      datasets: [{
+        label: 'Predictions',
+        data: [2300,3100,4200,3800,5100,4700,4900],
+        borderColor: '#0057B8',
+        backgroundColor: 'rgba(0,87,184,0.08)',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#0057B8',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 }, callback: v => (v/1000).toFixed(1)+'k' } }
+      }
+    }
+  });
+}
+</script>
